@@ -15,42 +15,16 @@ const teamMembers = [];
 let currentType = 'Manager';
 let moreTeamMembers = true;
 
-const questions = [
-    {
-      type: 'input',
-      name: 'name',
-      message: `What is your ${currentType}'s name?`,
-    },
-    {
-      type: 'input',
-      name: 'id',
-      message: `What is your ${currentType}'s id?`,
-    },
-    {
-      type: 'input',
-      name: 'email',
-      message: `What is your ${currentType}'s email?`,
-    },
-    {
-      type: 'input',
-      name: 'github',
-      message: `What is your ${currentType}'s Github Username?`,
-    },
-    {
-      type: 'input',
-      name: 'office',
-      message: `What is your ${currentType}'s office #?`,
-    },
-  ]
-
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 
 //Ask the first set of questions
 
 const init = async () => {
-	let manager = await inquirer.prompt(questions);
-	while(moreTeamMembers) {
+	let manager = await inquirer.prompt(generateQuestions());
+	teamMembers.push(manager);
+	while (moreTeamMembers) {
+		//Ask what the next employee is
 		let res = await inquirer.prompt([
 			{
 				type: 'list',
@@ -59,20 +33,77 @@ const init = async () => {
 				choices: ['Engineer', 'Intern', "I don't want to add any more team members"]
 			},
 		]);
-		if(res.type !== 'Engineer' && res.type !== 'Intern')
-		{
+		//Check if we need to break from loop
+		if (res.type !== 'Engineer' && res.type !== 'Intern') {
 			moreTeamMembers = false;
 			break;
 		}
-		
+
 		console.log(res);
 
 		currentType = res.type;
 
-		let teamMember = await inquirer.prompt(questions);
+		//Get the team member data
+		let teamMember = await inquirer.prompt(generateQuestions());
 
-		teamMembers.push(teamMember);
+		if(currentType === 'Engineer')
+			teamMembers.push(new Engineer(teamMember.name, teamMember.id, teamMember.email, teamMember.github))
+		else if(currentType === 'Intern')
+
+		// teamMembers.push(teamMember);
 	}
+
+	console.log(teamMembers);
+}
+
+/**
+ * Generate the questions
+ */
+const generateQuestions = () => {
+	let questions = [
+		{
+			type: 'input',
+			name: 'name',
+			message: `What is your ${currentType}'s name?`,
+		},
+		{
+			type: 'input',
+			name: 'id',
+			message: `What is your ${currentType}'s id?`,
+		},
+		{
+			type: 'input',
+			name: 'email',
+			message: `What is your ${currentType}'s email?`,
+		},
+	];
+	
+	if(currentType === 'Manager')
+		questions.push(
+			{
+				type: 'input',
+				name: 'office',
+				message: `What is your ${currentType}'s Office #?`,
+			},
+		);
+	else if(currentType === 'Engineer')
+		questions.push(
+			{
+				type: 'input',
+				name: 'github',
+				message: `What is your ${currentType}'s Github Username?`,
+			},
+		);
+		else if(currentType === 'Intern')
+			questions.push(
+				{
+					type: 'input',
+					name: 'school',
+					message: `What school does your ${currentType} go to?`,
+				},
+			);
+
+	return questions;
 }
 
 init();
