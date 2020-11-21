@@ -49,9 +49,18 @@ const init = async () => {
 		else if(currentType === 'Intern')
 			teamMembers.push(new Intern(teamMember.name, teamMember.id, teamMember.email, teamMember.school))
 	}
-
-	console.log(teamMembers);
+	
+	writeHtml(render(teamMembers));	
 }
+
+const writeHtml = html => {
+	if (!fs.existsSync(OUTPUT_DIR)) {
+		fs.mkdirSync(OUTPUT_DIR);	
+	}
+	fs.writeFile(outputPath, html, (err) =>
+      err ? console.log(err) : console.log('Success!')
+	);
+};
 
 /**
  * Generate the questions
