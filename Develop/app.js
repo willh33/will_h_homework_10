@@ -22,7 +22,7 @@ let moreTeamMembers = true;
 
 const init = async () => {
 	let manager = await inquirer.prompt(generateQuestions());
-	teamMembers.push(manager);
+	teamMembers.push(new Manager(manager.name, manager.id, manager.email, manager.office));
 	while (moreTeamMembers) {
 		//Ask what the next employee is
 		let res = await inquirer.prompt([
@@ -39,8 +39,6 @@ const init = async () => {
 			break;
 		}
 
-		console.log(res);
-
 		currentType = res.type;
 
 		//Get the team member data
@@ -49,8 +47,7 @@ const init = async () => {
 		if(currentType === 'Engineer')
 			teamMembers.push(new Engineer(teamMember.name, teamMember.id, teamMember.email, teamMember.github))
 		else if(currentType === 'Intern')
-
-		// teamMembers.push(teamMember);
+			teamMembers.push(new Intern(teamMember.name, teamMember.id, teamMember.email, teamMember.school))
 	}
 
 	console.log(teamMembers);
